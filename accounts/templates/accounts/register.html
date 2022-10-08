@@ -1,5 +1,46 @@
-<form action="{% url 'accounts:register_view' %}" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">sla</button>
-</form>
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}">
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="container-content">
+                <div class="box-form">
+                    <div class="title">
+                        <h1>Register</h>
+                    </div>
+                    <div class="form-image">
+                        <img src="{% static 'accounts/img/skype_logo.png' %}" alt="Skype logo">
+                    </div>
+                    <div class="form-content">
+                        <form action="{% url 'accounts:register_view' %}" method="post">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="form-field">
+                                    {{field.label_tag}}
+                                    {{field}}
+                                    {{ field.errors }}
+                                    
+                                </div>
+                                
+                            {% endfor %}
+                            <button type="submit">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

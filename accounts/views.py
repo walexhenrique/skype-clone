@@ -17,7 +17,7 @@ class RegisterView(View):
         if form.is_valid():
             return redirect('accounts:teste')
         
-        return redirect('accounts:register_view')
+        return render(self.request, 'accounts/register.html', {'form': form})
 
 
 def teste(request):

@@ -1,12 +1,24 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render
-from django.views.generic.edit import CreateView
+from django.shortcuts import redirect, render
+from django.views import View
 
 from .forms.register_form import RegisterForm
 
 
-class RegisterView(CreateView):
+class RegisterView(View):
     
-    form_class = RegisterForm
-    template_name = 'accounts/register.html'
-    success_url = '/admin/'
+    def get(self, *args, **kwargs):
+        form = RegisterForm()
+        return render(self.request, 'accounts/register.html', {'form': form})
+    
+    def post(self, *args, **kwargs):
+        form = RegisterForm(self.request.POST)
+
+        if form.is_valid():
+            return redirect('accounts:teste')
+        
+        return redirect('accounts:register_view')
+
+
+def teste(request):
+    return render(request, 'accounts/teste.html')

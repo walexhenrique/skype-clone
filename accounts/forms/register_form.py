@@ -2,96 +2,85 @@ from collections import defaultdict
 
 from django import forms
 from django.contrib.auth.models import User
-from django.forms import ValidationError
+from django.core.exceptions import ValidationError
 
 
-class RegisterForm(forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self._errors = defaultdict(list)
-
+class RegisterForm(forms.Form):
     username = forms.CharField(
         label = 'Username',
         error_messages = {
-            'required': 'Error, username is required',
-            'max_length': 'Error, username is longer than 150 characters',
-            'min_length': 'Error, username is too short',
+            'required': 'Error, username cannot be empty',
+            'max_length': 'Error, username is too big',
         },
         max_length = 150,
-        min_length = 4,
     )
 
-    first_name = forms.CharField(
-        label = 'Your surname',
+    surname = forms.CharField(
+        label = 'Surname',
         error_messages = {
-            'required': 'Error, surname is required',
-            'max_length': 'Error, surname is longer than 150 characters',
-            'min_length': 'Error, surname is too short',
+            'required': 'Error, surname cannot be empty',
+            'max_length': 'Error, surname is too big'
         },
-        max_length = 150,
-        min_length = 4,
+        max_length=50,
+        help_text = 'This will be the public and prominent name'
     )
 
     email = forms.EmailField(
         label = 'E-mail',
         error_messages = {
-            'required': 'Error, email is required',
+            'required': 'Error, email cannot be empty'
         },
     )
 
     password = forms.CharField(
-        widget = forms.PasswordInput(
-            attrs={
-                'placeholder': 'Your password'
-            }
-        ),
+        label = 'Password',
         error_messages = {
-            'required': 'Error, password is required',
-        }
+            'required': 'Error, password cannot be empty'
+        },
+        widget = forms.PasswordInput
     )
+
     password2 = forms.CharField(
         label = 'Repeat your password',
-        widget = forms.PasswordInput(
-            attrs = {
-                'placeholder': 'Repeat your password',
-            },
-        ),
         error_messages = {
-            'required': 'Error, please repeat your password'
-        }
+            'required': 'Error, this field cannot be empty'
+        },
+        widget = forms.PasswordInput
     )
-    
-    class Meta:
-        model = User
-        fields = ['first_name', 'username', 'email', 'password']
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email', '')
-
-        email_exists = User.objects.filter(email=email).exists()
-
-        if email_exists:
-            self._errors['email'].append('E-mail already registered')
-        
-        return email
-    
     def clean_username(self):
-        username = self.cleaned_data.get('username', '')
-
-        username_exists = User.objects.filter(username=username).exists()
-
-        if username_exists:
-            self._errors['username'].append('Username alredy registered')
+        username = self.cleaned_data.get('username')
         
+        username_alredy_exists = User.objects.filter(username=username).exists()
+
+        if username_alredy_exists:
+            raise ValidationError('Error, username already exists in the database')
+
         return username
     
+    def clean_surname(self):
+        surname = self.cleaned_data.get('surname', '')
+
+        if len(surname) < 3:
+            raise ValidationError('Error, surname is too short')
+        
+        return surname
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        email_alredy_exists = User.objects.filter(email=email).exists()
+
+        if email_alredy_exists:
+            raise ValidationError('Error, email already exists in the database')
+
+        return email
+
     def clean_password(self):
         password = self.cleaned_data.get('password', '')
 
         if len(password) < 5:
-            self._errors['password'].append('Password is too short')
+            raise ValidationError('Error, password is too short')
         
         return password
     
@@ -99,20 +88,17 @@ class RegisterForm(forms.ModelForm):
         password2 = self.cleaned_data.get('password2', '')
 
         if len(password2) < 5:
-            self._errors['password2'].append('Password is too short')
+            raise ValidationError('Error, password is too short')
         
         return password2
     
     def clean(self):
-        cleaned_data = super().clean()
+        super().clean()
 
-        password = cleaned_data.get('password', '')
-        password2 = cleaned_data.get('password2', '')
+        password = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
 
         if password != password2:
-            self._errors['password'].append('the passwords do not match')
-            self._errors['password2'].append('the passwords do not match')
+            raise ValidationError('Error, passwords not be equals')
         
-        if self._errors:
-            raise ValidationError(self._errors)
-        
+    

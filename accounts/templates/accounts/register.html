@@ -1,6 +1,5 @@
-<form action="." method="post">
+<form action="{% url 'accounts:register_view' %}" method="post">
     {% csrf_token %}
     {{ form }}
     <button type="submit">sla</button>
 </form>
-

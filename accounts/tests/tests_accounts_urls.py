@@ -13,3 +13,7 @@ class AccountsURLsTest(SimpleTestCase):
         url = reverse('accounts:logout_view')
         self.assertEqual(url, '/logout/')
     
+    def test_view_login_has_the_correct_path(self):
+        url = reverse('accounts:login_view')
+        self.assertEqual(url, '/login/')
+    

@@ -51,6 +51,7 @@ class RegisterViewTest(TestCase):
 
         self.assertFalse(user_created)
         self.assertFalse(profile_created)
+        
     
     def test_register_view_form_used_is_correct(self):
         url = reverse('accounts:register_view')

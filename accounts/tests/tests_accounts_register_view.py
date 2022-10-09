@@ -10,6 +10,6 @@ class RegisterViewTest(TestCase):
         response = self.client.get(reverse('accounts:register_view'))
         self.assertEqual(response.status_code, 200)
     
-
+    
 
     

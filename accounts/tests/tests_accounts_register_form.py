@@ -101,21 +101,25 @@ class RegisterFormTest(TestCase):
     
     def test_field_password_is_less_than_5_characters_not_valid(self):
         self.data['password'] = '1234'
+        self.data['password2'] = '1234'
 
         form = RegisterForm(self.data)
         self.assertFalse(form.is_valid())
 
         self.data['password'] = '12345'
+        self.data['password2'] = '12345'
         form = RegisterForm(self.data)
         self.assertTrue(form.is_valid())
     
     def test_field_password2_is_less_than_5_characters_not_valid(self):
+        self.data['password'] = '1234'
         self.data['password2'] = '1234'
 
         form = RegisterForm(self.data)
         self.assertFalse(form.is_valid())
 
         self.data['password2'] = '12345'
+        self.data['password'] = '12345'
         form = RegisterForm(self.data)
         self.assertTrue(form.is_valid())
 

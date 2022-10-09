@@ -1,0 +1,49 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="container-content">
+                <div class="box-form">
+                    <div class="title">
+                        <h1>Login</h>
+                    </div>
+                    <div class="form-image">
+                        <img src="{% static 'accounts/img/skype_logo.png' %}" alt="Skype logo">
+                    </div>
+                    <div class="form-content">
+                        <form action="{% url 'accounts:login_view' %}" method="post">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="form-field">
+                                    {{field.label_tag}}
+                                    {{field}}
+                                    {{ field.errors }}
+                                </div>
+                            {% endfor %}
+                            <button type="submit">Login</button>
+                        </form>
+                        
+                    </div>
+                    <p class="login">Already have an account?<a href="#"> Log In</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

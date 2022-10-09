@@ -39,6 +39,9 @@
                         </form>
                         
                     </div>
+                {% if form.errors %}
+                    <p>There are errors in the form, please fix them and send again.</p>
+                {% endif %}
                     <p class="login">Already have an account?<a href="#"> Log In</a></p>
                 </div>
             </div>

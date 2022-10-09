@@ -11,11 +11,13 @@ from .models import Profile
 class RegisterView(View):
     
     def get(self, *args, **kwargs):
-        form = RegisterForm()
+        register_data = self.request.session.get('form_register')
+        form = RegisterForm(register_data)
         return render(self.request, 'accounts/register.html', {'form': form})
     
     def post(self, *args, **kwargs):
         form = RegisterForm(self.request.POST)
+        self.request.session['form_register'] = self.request.POST
 
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -25,9 +27,10 @@ class RegisterView(View):
             user = User.objects.create_user(username=username, email=email, password=password)
 
             Profile.objects.create(surname=surname, user=user, slug=username)
+            del(self.request.session['form_register'])
             return redirect('accounts:teste')
         
-        return render(self.request, 'accounts/register.html', {'form': form})
+        return redirect('accounts:register_view')
 
 
 class LoginView(View):
@@ -52,4 +55,4 @@ class LoginView(View):
 
 
 def teste(request):
-    return render(request, 'accounts/teste.html')
+    return render(request, 'accounts/teste.html', {'saco': 'cimento'})

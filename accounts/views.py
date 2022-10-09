@@ -5,6 +5,7 @@ from django.views import View
 
 from .forms.login_form import LoginForm
 from .forms.register_form import RegisterForm
+from .models import Profile
 
 
 class RegisterView(View):
@@ -17,6 +18,13 @@ class RegisterView(View):
         form = RegisterForm(self.request.POST)
 
         if form.is_valid():
+            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            surname = form.cleaned_data.get('surname')
+            user = User.objects.create_user(username=username, email=email, password=password)
+
+            Profile.objects.create(surname=surname, user=user, slug=username)
             return redirect('accounts:teste')
         
         return render(self.request, 'accounts/register.html', {'form': form})

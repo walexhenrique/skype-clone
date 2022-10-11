@@ -1,14 +1,17 @@
+<form action="{% url 'friendships:search' %}" method="get">
+    <input type="text" placeholder="Search friend..." name='surname'>
+    <button type="submit">Buscar</button>
+</form>
 <h1>Friends</h1>
 
-{% if friends_add or friends_received %}
-{% for friend in friends_add  %}
-    <p>{{friend.id_receiver.surname}}</p>
-{% endfor %}
+{% for friend in friends %}
+    {% if friend.id_requester.user == request.user.username %}
+        {{ friend.id_receiver.surname }}
+    {% else %}
+        {{ friend.id_requester.surname }}
+    {% endif %}
+    
+{% empty %}
+    <p>You don't have friends.</p>
 
-{% for friend in friends_received  %}
-    <p>{{friend.id_requester.surname}}</p>
 {% endfor %}
-
-{% else %}
-<p>You don't have friends.</p>
-{% endif %}

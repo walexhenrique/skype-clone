@@ -30,6 +30,7 @@ DEBUG = True if os.environ.get('DEBUG') == '1' else False
 ALLOWED_HOSTS = []
 
 LOGOUT_REDIRECT_URL = reverse_lazy('accounts:teste')
+LOGIN_URL = reverse_lazy('accounts:login_view')
 
 # Application definition
 

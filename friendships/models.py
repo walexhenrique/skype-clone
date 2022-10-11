@@ -20,5 +20,8 @@ class Friend(models.Model):
     request_date = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=PENDING)
+
+    def __str__(self) -> str:
+        return f'{self.id_requester.surname} - {self.id_receiver.surname}'
     
 

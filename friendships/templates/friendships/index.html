@@ -1,1 +1,14 @@
-teste
+<h1>Friends</h1>
+
+{% if friends_add or friends_received %}
+{% for friend in friends_add  %}
+    <p>{{friend.id_receiver.surname}}</p>
+{% endfor %}
+
+{% for friend in friends_received  %}
+    <p>{{friend.id_requester.surname}}</p>
+{% endfor %}
+
+{% else %}
+<p>You don't have friends.</p>
+{% endif %}

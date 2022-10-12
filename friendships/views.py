@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 from .models import Friend
 
@@ -37,3 +37,27 @@ class SearchListView(ListView):
         ).exclude(surname=profile_user.surname)
 
         return qs
+
+
+class ProfileDetailView(DetailView):
+    model = Profile
+    context_object_name = 'profile'
+    template_name = 'friendships/profile_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile_user = Profile.objects.get(user=self.request.user)
+        slug = self.kwargs.get('slug')
+        profile_detail = Profile.objects.get(slug=slug)
+
+        is_owner = True if slug == profile_user.slug else False
+        context['is_owner'] = is_owner
+        
+        are_friends = Friend.objects.filter(
+            Q(id_requester=profile_user,
+            id_receiver=profile_detail) |
+            Q(id_requester=profile_detail,
+            id_receiver=profile_user)
+        ).exists()
+        context['are_friends'] = are_friends
+        return context

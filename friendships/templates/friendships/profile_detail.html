@@ -1,0 +1,13 @@
+<p>Surname: {{profile.surname}}</p>
+<p>bio: {{profile.bio}}</p>
+
+{% if is_owner %}
+    <p>Click here for edit your profile</p>
+{% endif %}
+
+<p>{{is_owner}}</p>
+<h1>{{are_friends}}</h1>
+
+{% if not are_friends %}
+    <p>Add friend</p>
+{% endif %}

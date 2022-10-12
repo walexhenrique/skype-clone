@@ -91,6 +91,35 @@ class ProfileEditUpdateView(UpdateView):
             return redirect(reverse('friendships:profile-detail', kwargs={'slug': slug}))
         
         return super().get(request, *args, **kwargs)
-    
+
+@method_decorator(login_required, 'dispatch')
+class ProfileFriendRequest(View):
+    def get(self, *args, **kwargs):
+        slug = self.kwargs.get('slug')
+        
+        profile_request = Profile.objects.get(slug=slug)
+        profile_owner = Profile.objects.get(user=self.request.user)
+        
+        if profile_request.slug == profile_owner.slug:
+            return redirect(reverse_lazy('friendships:index'))
+
+        search_friendships = Friend.objects.filter(
+            Q(
+                Q(id_requester = profile_request,
+                id_receiver = profile_owner),
+                ~Q(status = 'D')
+            ) | Q(
+                Q(id_requester = profile_owner,
+                id_receiver = profile_request),
+                ~Q(status = 'D')
+            )
+        ).exists()
+
+        if search_friendships:
+            return redirect(reverse_lazy('friendships:index'))
+        
+        Friend.objects.create(id_requester=profile_owner, id_receiver=profile_request)
+        return redirect(reverse_lazy('friendships:index'))
+
 
 

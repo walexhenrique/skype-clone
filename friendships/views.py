@@ -20,7 +20,7 @@ class IndexView(View):
         
         return render(self.request, 'friendships/index.html', {'friends': friends})
 
-
+@method_decorator(login_required, 'dispatch')
 class SearchListView(ListView):
     model = Profile
     context_object_name = 'profiles'

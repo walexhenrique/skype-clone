@@ -1,5 +1,6 @@
 {% for profile in profiles %}
 
     <p>{{profile.surname}}</p>
-
+{% empty %}
+    <p>We didn't find anything for your search.</p>
 {% endfor %}

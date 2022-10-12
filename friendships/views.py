@@ -1,10 +1,12 @@
+from accounts.forms.profile_form import ProfileForm
 from accounts.models import Profile
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, UpdateView
 
 from .models import Friend
 
@@ -69,3 +71,18 @@ class ProfileDetailView(DetailView):
 
         context['are_friends'] = are_friends
         return context
+
+@method_decorator(login_required, 'dispatch')
+class ProfileEditUpdateView(UpdateView):
+    model = Profile
+    form_class = ProfileForm
+    template_name = 'friendships/profile-edit.html'
+    success_url = reverse_lazy('friendships:index')
+
+    def get(self, request, *args, **kwargs):
+        slug = self.kwargs.get('slug')
+        profile = Profile.objects.get(slug=slug)
+        if profile.user != self.request.user:
+            return redirect(reverse('friendships:profile-detail', kwargs={'slug': slug}))
+        
+        return super().get(request, *args, **kwargs)

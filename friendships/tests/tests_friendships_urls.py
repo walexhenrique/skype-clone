@@ -17,3 +17,8 @@ class FriendshipsURLsTest(SimpleTestCase):
         url = reverse('friendships:profile-detail', kwargs={'slug': 'breno'})
         
         self.assertEqual(url, '/friendships/profile-detail/breno/')
+    
+    def test_view_profile_detail_edit_has_the_correct_path(self):
+        url = reverse('friendships:profile-edit', kwargs={'slug':'breno'})
+
+        self.assertEqual(url, '/friendships/profile-detail/breno/edit/')

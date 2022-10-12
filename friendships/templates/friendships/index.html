@@ -5,7 +5,7 @@
 <h1>Friends</h1>
 
 {% for friend in friends %}
-    {% if friend.id_requester.user == request.user.username %}
+    {% if friend.id_requester.user.username == request.user.username %}
         {{ friend.id_receiver.surname }}
     {% else %}
         {{ friend.id_requester.surname }}

@@ -2,6 +2,7 @@ from accounts.forms.profile_form import ProfileForm
 from accounts.models import Profile
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -81,8 +82,15 @@ class ProfileEditUpdateView(UpdateView):
 
     def get(self, request, *args, **kwargs):
         slug = self.kwargs.get('slug')
-        profile = Profile.objects.get(slug=slug)
-        if profile.user != self.request.user:
+        profile = Profile.objects.filter(slug=slug)
+
+        if not profile:
+            raise Http404()
+
+        if profile.first().user != self.request.user:
             return redirect(reverse('friendships:profile-detail', kwargs={'slug': slug}))
         
         return super().get(request, *args, **kwargs)
+    
+
+

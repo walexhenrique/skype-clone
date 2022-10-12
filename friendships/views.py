@@ -38,7 +38,7 @@ class SearchListView(ListView):
 
         return qs
 
-
+@method_decorator(login_required, 'dispatch')
 class ProfileDetailView(DetailView):
     model = Profile
     context_object_name = 'profile'
@@ -46,18 +46,26 @@ class ProfileDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Get profile user logged
         profile_user = Profile.objects.get(user=self.request.user)
+        
+        # Slug profil detail
         slug = self.kwargs.get('slug')
+
+        # Get profile from slug
         profile_detail = Profile.objects.get(slug=slug)
 
+        # Checks if slug is equal slug from profile_user
         is_owner = True if slug == profile_user.slug else False
         context['is_owner'] = is_owner
         
+        # Check if are friends
         are_friends = Friend.objects.filter(
             Q(id_requester=profile_user,
             id_receiver=profile_detail) |
             Q(id_requester=profile_detail,
             id_receiver=profile_user)
         ).exists()
+
         context['are_friends'] = are_friends
         return context

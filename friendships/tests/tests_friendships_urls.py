@@ -22,3 +22,8 @@ class FriendshipsURLsTest(SimpleTestCase):
         url = reverse('friendships:profile-edit', kwargs={'slug':'breno'})
 
         self.assertEqual(url, '/friendships/profile-detail/breno/edit/')
+
+    def test_view_friend_request_has_the_correct_path(self):
+        url = reverse('friendships:friend-request', kwargs={'slug': 'breno'})
+
+        self.assertEqual(url, '/friendships/friend-request/breno/')

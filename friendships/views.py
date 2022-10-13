@@ -97,7 +97,11 @@ class ProfileFriendRequest(View):
     def get(self, *args, **kwargs):
         slug = self.kwargs.get('slug')
         
-        profile_request = Profile.objects.get(slug=slug)
+        profile_request = Profile.objects.filter(slug=slug).first()
+
+        if not profile_request:
+            raise Http404()
+            
         profile_owner = Profile.objects.get(user=self.request.user)
         
         if profile_request.slug == profile_owner.slug:

@@ -1,0 +1,5 @@
+{% for friend in friends %}
+    <p>{{friend}}</p>
+{% empty %}
+    <p>You don't have new requests.</p>
+{% endfor %}

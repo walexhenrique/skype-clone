@@ -148,9 +148,30 @@ class DeniedRequestView(View):
         ).first()
 
         if not friend_request:
-            return redirect('friendships:pending')
+            return redirect(reverse('friendships:pending'))
         
         friend_request.status = 'D'
         friend_request.save()
 
-        return redirect('friendships:pending')
+        return redirect(reverse('friendships:pending'))
+
+
+@method_decorator(login_required, 'dispatch')
+class AcceptedRequestView(View):
+    def get(self, *args, **kwargs):
+        user = self.request.user
+
+        id_url = self.kwargs.get('id')
+        friend_request = Friend.objects.filter(
+            id_requester__user=user,
+            id=id_url,
+            status='P',
+        ).first()
+
+        if not friend_request:
+            return redirect(reverse('friendships:pending'))
+        
+        friend_request.status = 'A'
+        friend_request.save()
+
+        return redirect(reverse('friendships:pending'))

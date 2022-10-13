@@ -32,3 +32,13 @@ class FriendshipsURLsTest(SimpleTestCase):
         url = reverse('friendships:pending')
         
         self.assertEqual(url, '/friendships/pending/')
+    
+    def test_view_denied_request_has_the_correct_path(self):
+        url = reverse('friendships:profile-denied', kwargs={'id': 1})
+
+        self.assertEqual(url, '/friendships/profile-denied/1/')
+
+    def test_view_accepted_request_has_the_correct_path(self):
+        url = reverse('friendships:profile-accepted', kwargs={'id': 1})
+
+        self.assertEqual(url, '/friendships/profile-accepted/1/')

@@ -3,7 +3,7 @@ from django.urls import reverse
 from .tests_friendships_base import FriendshipsBaseTest
 
 
-class IndexViewTest(FriendshipsBaseTest):
+class PendingViewTest(FriendshipsBaseTest):
     def setUp(self) -> None:
         self.url = reverse('friendships:pending')
         return super().setUp()

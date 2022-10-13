@@ -133,3 +133,24 @@ class FriendsPendingView(View):
         friends = Friend.objects.filter(Q(id_requester__user=user), status='P').order_by('-id')
 
         return render(self.request, 'friendships/pending.html', {'friends': friends})
+    
+
+@method_decorator(login_required, 'dispatch')
+class DeniedRequestView(View):
+    def get(self, *args, **kwargs):
+        user = self.request.user
+
+        id_url = self.kwargs.get('id')
+        friend_request = Friend.objects.filter(
+            id_requester__user=user,
+            id=id_url,
+            status='P',
+        ).first()
+
+        if not friend_request:
+            return redirect('friendships:pending')
+        
+        friend_request.status = 'D'
+        friend_request.save()
+
+        return redirect('friendships:pending')

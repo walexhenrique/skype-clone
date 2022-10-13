@@ -101,7 +101,7 @@ class ProfileFriendRequest(View):
 
         if not profile_request:
             raise Http404()
-            
+
         profile_owner = Profile.objects.get(user=self.request.user)
         
         if profile_request.slug == profile_owner.slug:
@@ -126,4 +126,10 @@ class ProfileFriendRequest(View):
         return redirect(reverse_lazy('friendships:index'))
 
 
+@method_decorator(login_required, 'dispatch')
+class FriendsPendingView(View):
+    def get(self, *args, **kwargs):
+        user = self.request.user
+        friends = Friend.objects.filter(Q(id_requester__user=user), status='P').order_by('-id')
 
+        return render(self.request, 'friendships/pending.html', {'friends': friends})

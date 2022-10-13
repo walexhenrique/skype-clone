@@ -27,3 +27,8 @@ class FriendshipsURLsTest(SimpleTestCase):
         url = reverse('friendships:friend-request', kwargs={'slug': 'breno'})
 
         self.assertEqual(url, '/friendships/friend-request/breno/')
+    
+    def test_view_peding_has_the_correct_path(self):
+        url = reverse('friendships:pending')
+        
+        self.assertEqual(url, '/friendships/pending/')
